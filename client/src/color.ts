@@ -4,4 +4,8 @@ export default class Rgb {
   clone() {
     return new Rgb(this.r, this.g, this.b);
   }
+
+  toGL() {
+    return [this.r / 255, this.g / 255, this.b / 255, 1]
+  }
 }
