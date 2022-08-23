@@ -40,12 +40,14 @@ export class Vec2 {
 
 export interface Pixel {
   color: Rgb;
+  pos: Vec2;
   solid?: boolean;
 }
 
 export interface Chunk {
   pos: Vec2;
-  pixels: Pixel[][];
+  background: Rgb;
+  pixels: (Pixel | null)[][];
 }
 
 export interface World {
