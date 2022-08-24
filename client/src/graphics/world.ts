@@ -19,7 +19,6 @@ export const setChunk = (
   },
   chunk: w.Chunk
 ) => {
-    
   prim.setRect(
     gl,
     arrays,
@@ -32,8 +31,20 @@ export const setChunk = (
   for (const x in chunk.pixels) {
     for (const y in chunk.pixels[x]) {
       const pixel = chunk.pixels[x][y];
-      if (pixel === null) continue;
+      if (!pixel) continue;
       setPixel(gl, arrays, pixel);
     }
+  }
+};
+
+export const setWorld = (
+  gl: WebGLRenderingContext,
+  arrays: {
+    [key: string]: twgl.FullArraySpec;
+  },
+  world: w.World
+) => {
+  for (const chunk of world.chunks) {
+    setChunk(gl, arrays, chunk);
   }
 };

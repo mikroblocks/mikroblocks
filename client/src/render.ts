@@ -1,7 +1,10 @@
 import * as twgl from "twgl.js";
 import vert from "./glsl/vertex";
 import frag from "./glsl/fragment";
+import * as w from "./world";
 import Rgb from "./color";
+import { setChunk, setWorld } from "./graphics/world";
+import { buildChunk } from "./chunk";
 
 twgl.setDefaults({ attribPrefix: "a_" });
 
@@ -11,7 +14,6 @@ if (!gl) throw new Error("Your browser does not support WebGL.");
 
 const programInfo = twgl.createProgramInfo(gl, [vert, frag]);
 
-
 const arrays = {
   position: {
     numComponents: 2,
@@ -20,9 +22,28 @@ const arrays = {
   color: { numComponents: 4, data: [] },
 };
 
+const world: w.World = {
+  chunks: [
+    buildChunk(
+      [
+        { pos: new w.Vec2(0, 0), color: new Rgb(255, 0, 0) },
+        { pos: new w.Vec2(1, 0), color: new Rgb(255, 255, 0) },
+      ],
+      new w.Vec2(0, 0)
+    ),
+    buildChunk(
+      [
+        { pos: new w.Vec2(0, 0), color: new Rgb(255, 0, 0) },
+        { pos: new w.Vec2(1, 0), color: new Rgb(255, 255, 255) },
+      ],
+      new w.Vec2(1, 0)
+    ),
+  ],
+};
+
+setWorld(gl, arrays, world);
 const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
-// make a function to render a single chunck
 export const render = (dt: number) => {
   twgl.resizeCanvasToDisplaySize(gl.canvas);
 
