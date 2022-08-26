@@ -2,9 +2,7 @@ import * as twgl from "twgl.js";
 import vert from "./glsl/vertex";
 import frag from "./glsl/fragment";
 import * as w from "./world";
-import Rgb from "./color";
-import { setChunk, setWorld } from "./graphics/world";
-import { buildChunk } from "./chunk";
+import { setWorld } from "./graphics/world";
 
 twgl.setDefaults({ attribPrefix: "a_" });
 
@@ -14,55 +12,42 @@ if (!gl) throw new Error("Your browser does not support WebGL.");
 
 const programInfo = twgl.createProgramInfo(gl, [vert, frag]);
 
-const arrays = {
-  position: {
-    numComponents: 2,
-    data: [],
-  },
-  color: { numComponents: 4, data: [] },
-};
+export const render = (world: w.World) => {
+  const _render = (dt: number) => {
+    twgl.resizeCanvasToDisplaySize(gl.canvas);
 
-const world: w.World = {
-  chunks: [
-    buildChunk(
-      [
-        { pos: new w.Vec2(0, 0), color: new Rgb(255, 0, 0) },
-        { pos: new w.Vec2(1, 0), color: new Rgb(255, 255, 0) },
-      ],
-      new w.Vec2(0, 0)
-    ),
-    buildChunk(
-      [
-        { pos: new w.Vec2(0, 0), color: new Rgb(255, 0, 0) },
-        { pos: new w.Vec2(1, 0), color: new Rgb(255, 255, 255) },
-      ],
-      new w.Vec2(1, 0)
-    ),
-  ],
-};
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-setWorld(gl, arrays, world);
-const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+    const uniforms = {
+      u_dt: dt * 0.001,
+      u_resolution: [gl.canvas.width, gl.canvas.height],
+    };
 
-export const render = (dt: number) => {
-  twgl.resizeCanvasToDisplaySize(gl.canvas);
+    if (world.background) gl.clearColor(...world.background.toGL());
+    else gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    gl.useProgram(programInfo.program);
 
-  const uniforms = {
-    u_dt: dt * 0.001,
-    u_resolution: [gl.canvas.width, gl.canvas.height],
+    const arrays = {
+      position: {
+        numComponents: 2,
+        data: [],
+      },
+      color: { numComponents: 4, data: [] },
+    };
+    setWorld(gl, arrays, world);
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+    twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+    twgl.setUniforms(programInfo, uniforms);
+
+    twgl.drawBufferInfo(gl, bufferInfo);
+
+    requestAnimationFrame(_render);
   };
 
-  gl.clearColor(0, 0, 0, 0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  requestAnimationFrame(_render);
 
-  gl.useProgram(programInfo.program);
-
-  twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
-  twgl.setUniforms(programInfo, uniforms);
-
-  twgl.drawBufferInfo(gl, bufferInfo);
-
-  requestAnimationFrame(render);
+  return _render;
 };

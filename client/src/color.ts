@@ -5,7 +5,7 @@ export default class Rgb {
     return new Rgb(this.r, this.g, this.b);
   }
 
-  toGL() {
+  toGL(): [number, number, number, number] {
     return [this.r / 255, this.g / 255, this.b / 255, 1]
   }
 }

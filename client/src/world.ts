@@ -46,10 +46,11 @@ export interface Pixel {
 
 export interface Chunk {
   pos: Vec2;
-  background: Rgb;
+  background?: Rgb;
   pixels: (Pixel | null)[][];
 }
 
 export interface World {
   chunks: Chunk[];
+  background?: Rgb;
 }

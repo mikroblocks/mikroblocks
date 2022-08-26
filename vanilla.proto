@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+message Init {
+    string type = 1; // What type of server this is (vanilla)
+    string version = 2; // What version the server is running
+}
+
+message Pixel {
+    int32 x = 1;
+    int32 y = 2;
+    string color = 1;
+}
+
+message Chunk {
+    int32 x = 1;
+    int32 y = 2;
+    repeated Pixel pixels = 3;
+    optional string background = 4;
+}
+
+message UpdateChunks {
+    repeated Chunk chunks = 1;
+}
+
+message KeyboardInput {
+    uint32 char = 1;
+}
