@@ -1,21 +1,22 @@
 syntax = "proto3";
 
+package mikroblocks.vanilla;
+
 message Init {
     string type = 1; // What type of server this is (vanilla)
     string version = 2; // What version the server is running
 }
 
-message Pixel {
-    int32 x = 1;
-    int32 y = 2;
-    string color = 1;
-}
-
 message Chunk {
     int32 x = 1;
     int32 y = 2;
-    repeated Pixel pixels = 3;
-    optional string background = 4;
+    // Each pixel is represented by 1 byte which corresponds to an id in the pallete.
+    // If the byte equal 0, it is considered nothing
+    bytes pixels = 3;
+    // The pallete is a list of colors. At most, a pallete can only have 255 colors. 
+    bytes pallete = 4;
+    // Three bytes
+    optional bytes background = 5;
 }
 
 message UpdateChunks {

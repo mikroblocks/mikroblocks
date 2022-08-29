@@ -7,3 +7,7 @@ edition = "2021"
 
 [dependencies]
 tungstenite = "0.17.3"
+prost = "0.10"
+
+[build-dependencies]
+prost-build = "0.10"

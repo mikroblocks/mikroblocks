@@ -1,6 +1,11 @@
+use prost::Message;
 use std::net::TcpListener;
 use std::thread::spawn;
-use tungstenite::accept;
+use tungstenite::{accept, Message as WsMessage};
+
+pub mod vanilla {
+    include!(concat!(env!("OUT_DIR"), "/mikroblocks.vanilla.rs"));
+}
 
 /// A WebSocket echo server
 fn main() {
@@ -9,12 +14,37 @@ fn main() {
         spawn(move || {
             let mut websocket = accept(stream.unwrap()).unwrap();
             loop {
-                let msg = websocket.read_message().unwrap();
+                let mut update_chunks = vanilla::UpdateChunks { chunks: Vec::new() };
+                update_chunks.chunks.push(vanilla::Chunk {
+                    background: Some(Vec::from([255, 255, 255])),
+                    x: 0,
+                    y: 0,
+                    pallete: Vec::new(),
+                    pixels: Vec::new(),
+                });
 
-                // We do not want to send back ping/pong messages.
-                if msg.is_binary() || msg.is_text() {
-                    websocket.write_message(msg).unwrap();
-                }
+                update_chunks.chunks.push(vanilla::Chunk {
+                    background: Some(Vec::from([255, 0, 0])),
+                    x: 1,
+                    y: 0,
+                    pallete: Vec::new(),
+                    pixels: Vec::new(),
+                });
+
+                update_chunks.chunks.push(vanilla::Chunk {
+                    background: Some(Vec::from([255, 255, 0])),
+                    x: 2,
+                    y: 0,
+                    pallete: Vec::new(),
+                    pixels: Vec::new(),
+                });
+
+                let mut buf = Vec::new();
+                buf.reserve(update_chunks.encoded_len());
+                update_chunks.encode(&mut buf).unwrap();
+                websocket.write_message(WsMessage::Binary(buf)).unwrap();
+
+                websocket.close(None).unwrap();
             }
         });
     }

@@ -19,14 +19,15 @@ export const setChunk = (
   },
   chunk: w.Chunk
 ) => {
-  prim.setRect(
-    gl,
-    arrays,
-    chunk.pos.mul(32 * 8),
-    32 * 8,
-    32 * 8,
-    chunk.background
-  );
+  if (chunk.background)
+    prim.setRect(
+      gl,
+      arrays,
+      chunk.pos.mul(32 * 8),
+      32 * 8,
+      32 * 8,
+      chunk.background
+    );
 
   for (const x in chunk.pixels) {
     for (const y in chunk.pixels[x]) {
@@ -44,7 +45,7 @@ export const setWorld = (
   },
   world: w.World
 ) => {
-  for (const chunk of world.chunks) {
+  for (const [pos, chunk] of world.chunks) {
     setChunk(gl, arrays, chunk);
   }
 };

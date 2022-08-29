@@ -13,6 +13,7 @@
     "vite": "^3.0.7"
   },
   "dependencies": {
+    "@protobuf-ts/plugin": "^2.8.0",
     "twgl.js": "^4.24.0"
   }
 }
