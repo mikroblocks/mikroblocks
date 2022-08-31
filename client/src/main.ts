@@ -1,4 +1,4 @@
-import { updateChunks } from "./networking/translator";
+import { handlePacket, updateChunks } from "./networking/parser";
 import * as n from "./networking/vanilla";
 import { render } from "./render";
 import { World } from "./world";
@@ -13,7 +13,7 @@ const socket = new WebSocket(
 
 socket.binaryType = "arraybuffer";
 socket.onmessage = (e) => {
-  updateChunks(world, n.UpdateChunks.fromBinary(new Uint8Array(e.data)));
+  handlePacket(world, new Uint8Array(e.data));
 };
 socket.onclose = () => console.log("[mkrwds] socket closed");
 render(world);

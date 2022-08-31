@@ -7,7 +7,6 @@ pub mod vanilla {
     include!(concat!(env!("OUT_DIR"), "/mikroblocks.vanilla.rs"));
 }
 
-/// A WebSocket echo server
 fn main() {
     let server = TcpListener::bind("127.0.0.1:3000").unwrap();
     for stream in server.incoming() {
@@ -40,6 +39,7 @@ fn main() {
                 });
 
                 let mut buf = Vec::new();
+                buf.push(2);
                 buf.reserve(update_chunks.encoded_len());
                 update_chunks.encode(&mut buf).unwrap();
                 websocket.write_message(WsMessage::Binary(buf)).unwrap();
