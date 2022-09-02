@@ -1,8 +1,10 @@
+#![feature(slice_flatten)]
 use prost::Message;
 use std::net::TcpListener;
 use std::thread::spawn;
 use tungstenite::{accept, Message as WsMessage};
 
+mod world;
 pub mod vanilla {
     include!(concat!(env!("OUT_DIR"), "/mikroblocks.vanilla.rs"));
 }
@@ -13,7 +15,7 @@ fn main() {
         spawn(move || {
             let mut websocket = accept(stream.unwrap()).unwrap();
             loop {
-                let mut update_chunks = vanilla::UpdateChunks { chunks: Vec::new() };
+                let mut update_chunks = vanilla::UpdateWorld { chunks: Vec::new(), background: None };
                 update_chunks.chunks.push(vanilla::Chunk {
                     background: Some(Vec::from([255, 255, 255])),
                     x: 0,

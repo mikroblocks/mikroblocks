@@ -54,14 +54,11 @@ export const updateChunks = (
   }
 };
 
-export const handlePacket = (world: World, packet: Uint8Array) => {
-  const packetType = packet.slice(0, 1)[0];
-  const message = packet.subarray(1);
+export const handlePacket = (world: World, message: Uint8Array) => {
+  const packetType = message.slice(0, 1)[0];
+  const packet = message.subarray(1);
   switch (packetType) {
     case 2:
-      return updateChunks(
-        world,
-        n.UpdateChunks.fromBinary(new Uint8Array(message))
-      );
+      return updateChunks(world, n.UpdateChunks.fromBinary(packet));
   }
 };
