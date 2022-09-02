@@ -1,4 +1,3 @@
-import { BinaryReader } from "@protobuf-ts/runtime";
 import Rgb from "../color";
 import { Chunk, Vec2, World } from "../world";
 import * as n from "./vanilla";
@@ -58,6 +57,8 @@ export const handlePacket = (world: World, message: Uint8Array) => {
   const packetType = message.slice(0, 1)[0];
   const packet = message.subarray(1);
   switch (packetType) {
+    case 1:
+      return init(n.Init.fromBinary(packet));
     case 2:
       return updateChunks(world, n.UpdateChunks.fromBinary(packet));
   }

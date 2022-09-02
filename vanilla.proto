@@ -23,9 +23,8 @@ message Chunk {
 }
 
 // id: 2
-message UpdateWorld {
+message UpdateChunks {
     repeated Chunk chunks = 1;
-    optional bytes background = 2;
 }
 
 // id: 3

@@ -12,17 +12,23 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 /**
+ * id: 1
+ *
  * @generated from protobuf message mikroblocks.vanilla.Init
  */
 export interface Init {
     /**
+     * What type of server this is (vanilla)
+     *
      * @generated from protobuf field: string type = 1;
      */
-    type: string; // What type of server this is (vanilla)
+    type: string;
     /**
+     * What version the server is running
+     *
      * @generated from protobuf field: string version = 2;
      */
-    version: string; // What version the server is running
+    version: string;
 }
 /**
  * @generated from protobuf message mikroblocks.vanilla.Chunk
@@ -57,6 +63,8 @@ export interface Chunk {
     background?: Uint8Array;
 }
 /**
+ * id: 2
+ *
  * @generated from protobuf message mikroblocks.vanilla.UpdateChunks
  */
 export interface UpdateChunks {
@@ -66,6 +74,8 @@ export interface UpdateChunks {
     chunks: Chunk[];
 }
 /**
+ * id: 3
+ *
  * @generated from protobuf message mikroblocks.vanilla.KeyboardInput
  */
 export interface KeyboardInput {

@@ -22,34 +22,8 @@ pub struct World {
     pub background: Option<[u8; 3]>,
 }
 
-impl EncodeNet for World {
-    type NetStruct = vanilla::UpdateWorld;
-    fn encode_net(&self) -> Self::NetStruct {
-        let mut update_world_packet = vanilla::UpdateWorld {
-            chunks: Vec::new(),
-            background: None,
-        };
-
-        for (pos, chunk) in self.chunks.iter() {
-            update_world_packet.chunks.push(chunk.encode_net());
-        }
-
-        update_world_packet
-    }
-
-    fn encode_ws(&self) -> Vec<u8> {
-        let mut buf = Vec::new();
-        let net_struct = self.encode_net();
-        buf.push(2);
-        buf.reserve(net_struct.encoded_len());
-        net_struct.encode(&mut buf).unwrap();
-
-        buf
-    }
-}
-
 impl World {
-    pub fn new(chunks: Vec<Chunk>, background: Option<[u8;3]>) -> Self {
+    pub fn new(chunks: Vec<Chunk>, background: Option<[u8; 3]>) -> Self {
         let mut world = Self {
             chunks: HashMap::new(),
             background,
@@ -80,7 +54,7 @@ impl Chunk {
             background,
             pixels: [[None; 32]; 32],
             pallete: Vec::new(),
-            colors: [[0; 32]; 32]
+            colors: [[0; 32]; 32],
         };
 
         for pixel in pixels {
@@ -95,7 +69,7 @@ impl Chunk {
 
     fn rebuild_cache(&mut self) {
         // Maybe clear the pallete just in case?
-        let mut colors = self.colors.flatten_mut();
+        let colors = self.colors.flatten_mut();
         for (i, p) in self.pixels.flatten().iter().enumerate() {
             if let Some(pixel) = p {
                 if let Some(pallete_index) = self.pallete.iter().position(|&i| i == pixel.color) {
@@ -139,10 +113,6 @@ pub struct Pixel {
 
 impl Pixel {
     pub fn new(pos: IVec2, color: [u8; 3], solid: bool) -> Self {
-        Self {
-            color,
-            pos,
-            solid,
-        }
+        Self { color, pos, solid }
     }
 }
