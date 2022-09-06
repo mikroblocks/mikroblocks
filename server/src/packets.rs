@@ -19,7 +19,7 @@ pub fn init() -> Vec<u8> {
     buf
 }
 
-pub fn update_chunks(world: World, pos: Vec<IVec2>) -> Vec<u8> {
+pub fn update_chunks(world: &World, pos: Vec<IVec2>) -> Vec<u8> {
     let mut buf = Vec::new();
     let mut update_chunks = UpdateChunks { chunks: Vec::new() };
 
@@ -29,7 +29,7 @@ pub fn update_chunks(world: World, pos: Vec<IVec2>) -> Vec<u8> {
         }
     }
 
-    buf.push(1);
+    buf.push(2);
     buf.reserve(update_chunks.encoded_len());
     update_chunks.encode(&mut buf).unwrap();
 

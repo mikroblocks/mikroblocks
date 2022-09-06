@@ -20,11 +20,11 @@ fn main() {
                 vec![Chunk::new(
                     IVec2::new(0, 0),
                     vec![
-                        Pixel::new(IVec2::new(0, 0), [255, 255, 255], true),
+                        Pixel::new(IVec2::new(0, 0), [255, 0, 255], true),
                         Pixel::new(IVec2::new(0, 1), [255, 0, 0], true),
                         Pixel::new(IVec2::new(0, 2), [255, 255, 0], true),
                     ],
-                    None,
+                    Some([255, 255, 255]),
                 )],
                 None,
             );
@@ -33,7 +33,7 @@ fn main() {
 
             websocket
                 .write_message(WsMessage::Binary(packets::update_chunks(
-                    world,
+                    &world,
                     world.chunks.keys().map(Clone::clone).collect(),
                 )))
                 .unwrap();

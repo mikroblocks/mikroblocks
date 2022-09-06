@@ -5,6 +5,7 @@ import { World } from "./world";
 
 const world: World = {
   chunks: new Map(),
+  entities: new Map(),
 };
 
 const socket = new WebSocket(

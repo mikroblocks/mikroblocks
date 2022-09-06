@@ -52,5 +52,6 @@ export interface Chunk {
 
 export interface World {
   chunks: Map<Vec2, Chunk>;
+  entities: Map<number, any>
   background?: Rgb;
 }

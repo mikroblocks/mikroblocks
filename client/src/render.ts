@@ -21,6 +21,7 @@ export const render = (world: w.World) => {
     const uniforms = {
       u_dt: dt * 0.001,
       u_resolution: [gl.canvas.width, gl.canvas.height],
+      u_matrix: twgl.m4.ortho(0, gl.canvas.clientWidth, 0, gl.canvas.clientHeight, -1, 1),
     };
 
     if (world.background) gl.clearColor(...world.background.toGL());
