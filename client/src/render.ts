@@ -1,8 +1,8 @@
 import * as twgl from "twgl.js";
 import vert from "./glsl/vertex";
 import frag from "./glsl/fragment";
-import * as w from "./world";
 import { setWorld } from "./graphics/world";
+import { World } from "./world";
 
 twgl.setDefaults({ attribPrefix: "a_" });
 
@@ -12,7 +12,7 @@ if (!gl) throw new Error("Your browser does not support WebGL.");
 
 const programInfo = twgl.createProgramInfo(gl, [vert, frag]);
 
-export const render = (world: w.World) => {
+export const render = (world: World) => {
   const _render = (dt: number) => {
     twgl.resizeCanvasToDisplaySize(gl.canvas);
 

@@ -50,8 +50,14 @@ export interface Chunk {
   pixels: (Pixel | null)[][];
 }
 
+export interface Entity {
+  id: number;
+  pos: Vec2;
+  size: Vec2;
+}
+
 export interface World {
   chunks: Map<Vec2, Chunk>;
-  entities: Map<number, any>
+  entities: Map<number, Entity>
   background?: Rgb;
 }

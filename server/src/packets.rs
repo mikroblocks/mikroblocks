@@ -19,7 +19,7 @@ pub fn init() -> Vec<u8> {
     buf
 }
 
-pub fn update_chunks(world: &World, pos: Vec<IVec2>) -> Vec<u8> {
+pub fn update_chunks(world: &World, pos: Vec<&IVec2>) -> Vec<u8> {
     let mut buf = Vec::new();
     let mut update_chunks = UpdateChunks { chunks: Vec::new() };
 
@@ -32,6 +32,23 @@ pub fn update_chunks(world: &World, pos: Vec<IVec2>) -> Vec<u8> {
     buf.push(2);
     buf.reserve(update_chunks.encoded_len());
     update_chunks.encode(&mut buf).unwrap();
+
+    buf
+}
+
+pub fn update_entities(world: &World, ids: Vec<u32>) -> Vec<u8> {
+    let mut buf = Vec::new();
+    let mut update_entities = UpdateEntities { entities: Vec::new() };
+
+    for id in ids {
+        if let Some(entity) = world.entities.get(&id) {
+            update_entities.entities.push(entity.encode_net());
+        }
+    }
+
+    buf.push(3);
+    buf.reserve(update_entities.encoded_len());
+    update_entities.encode(&mut buf).unwrap();
 
     buf
 }

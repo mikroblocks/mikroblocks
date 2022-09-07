@@ -1,5 +1,5 @@
 use crate::vanilla;
-use glam::IVec2;
+use glam::{IVec2, DVec2, UVec2};
 use prost::Message;
 use std::collections::HashMap;
 
@@ -19,14 +19,20 @@ pub trait EncodeNet {
 #[derive(Debug, Clone)]
 pub struct World {
     pub chunks: HashMap<IVec2, Chunk>,
+    pub entities: HashMap<u32, Entity>,
     pub background: Option<[u8; 3]>,
+
+    pub next_entity_id: u32,
 }
 
 impl World {
     pub fn new(chunks: Vec<Chunk>, background: Option<[u8; 3]>) -> Self {
         let mut world = Self {
             chunks: HashMap::new(),
+            entities: HashMap::new(),
             background,
+
+            next_entity_id: 0,
         };
 
         for chunk in chunks {
@@ -34,6 +40,37 @@ impl World {
         }
 
         world
+    }
+
+    pub fn spawn_entity(&mut self, pos: DVec2, size: UVec2) -> u32 {
+        let entity = Entity { id: self.next_entity_id, pos, size };
+        self.entities.insert(self.next_entity_id, entity);
+
+        self.next_entity_id += 1;
+        // uhmmmm
+        self.next_entity_id - 1
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Entity {
+    pub id: u32,
+    pub pos: DVec2,
+    pub size: UVec2,
+}
+
+impl EncodeNet for Entity {
+    type NetStruct = vanilla::Entity;
+    fn encode_net(&self) -> Self::NetStruct {
+        let entity_net = vanilla::Entity {
+            id: self.id,
+            x: self.pos.x,
+            y: self.pos.y,
+            width: self.size.x,
+            height: self.size.y,
+        };
+
+        entity_net
     }
 }
 
@@ -84,15 +121,31 @@ impl Chunk {
             }
         }
     }
+
+    fn encode_net_rebuild(&mut self) -> <Self as EncodeNet>::NetStruct {
+        self.rebuild_cache();
+        self.encode_net()
+    }
+
+    fn encode_ws_rebuild(&mut self) -> Vec<u8> {
+        let mut buf = Vec::new();
+        let net_struct = self.encode_net_rebuild();
+        buf.reserve(net_struct.encoded_len());
+        net_struct.encode(&mut buf).unwrap();
+
+        buf
+    }
+
 }
+
+
 
 impl EncodeNet for Chunk {
     type NetStruct = vanilla::Chunk;
     fn encode_net(&self) -> Self::NetStruct {
-        // self.rebuild_cache();
         let mut chunk_net = vanilla::Chunk {
-            x: self.pos.x as i32,
-            y: self.pos.y as i32,
+            x: self.pos.x,
+            y: self.pos.y,
             background: self.background.map(|a| a.to_vec()),
             pixels: Vec::new(),
             pallete: Vec::new(),

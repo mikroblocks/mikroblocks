@@ -1,5 +1,5 @@
 import Rgb from "../color";
-import { Chunk, Vec2, World } from "../world";
+import { Chunk, Entity, Vec2, World } from "../world";
 import * as n from "./vanilla";
 
 export const init = (initPacket: n.Init) => {
@@ -11,25 +11,25 @@ export const init = (initPacket: n.Init) => {
     console.warn("[mkrwds] The server isn't running the same version as you");
 };
 
-export const chunkBytesToChunk = (chunkBytes: n.Chunk): Chunk => {
+export const chunkNetToChunk = (chunkNet: n.Chunk): Chunk => {
   const chunk: Chunk = {
-    pos: new Vec2(chunkBytes.x, chunkBytes.y),
-    background: chunkBytes.background
-      ? Rgb.fromBytes(chunkBytes.background)
+    pos: new Vec2(chunkNet.x, chunkNet.y),
+    background: chunkNet.background
+      ? Rgb.fromBytes(chunkNet.background)
       : new Rgb(0, 0, 0),
     pixels: Array.from(Array(32), () => new Array(32)),
   };
 
   const pallete: Rgb[] = [];
 
-  for (let i = 0; i < chunkBytes.pallete.length; i += 3) {
-    pallete.push(Rgb.fromBytes(chunkBytes.pallete, i));
+  for (let i = 0; i < chunkNet.pallete.length; i += 3) {
+    pallete.push(Rgb.fromBytes(chunkNet.pallete, i));
   }
 
-  for (let i = 0; i < chunkBytes.pixels.length; i++) {
+  for (let i = 0; i < chunkNet.pixels.length; i++) {
     const x = i % 32;
     const y = Math.floor(i / 32);
-    const byte = chunkBytes.pixels[i];
+    const byte = chunkNet.pixels[i];
     if (byte === 0) {
       chunk.pixels[y][x] = null;
     } else {
@@ -47,11 +47,28 @@ export const updateChunks = (
   world: World,
   updateChunksPacket: n.UpdateChunks
 ) => {
-  for (const chunkBytes of updateChunksPacket.chunks) {
-    const chunk = chunkBytesToChunk(chunkBytes);
+  for (const chunkNet of updateChunksPacket.chunks) {
+    const chunk = chunkNetToChunk(chunkNet);
     world.chunks.set(chunk.pos.clone(), chunk);
   }
 };
+
+export const entityNetToEntity = (entityNet: n.Entity): Entity => {
+  const entity: Entity = {
+    id: entityNet.id,
+    pos: new Vec2(entityNet.x, entityNet.y),
+    size: new Vec2(entityNet.width, entityNet.height),
+  }
+
+  return entity
+}
+
+export const updateEntities = (world: World, updateEntitiesPacket: n.UpdateEntities) => {
+  for (const entityNet of updateEntitiesPacket.entities) {
+    const entity: Entity = entityNetToEntity(entityNet);
+    world.entities.set(entity.id, entity);
+  }
+}
 
 export const handlePacket = (world: World, message: Uint8Array) => {
   const packetType = message.slice(0, 1)[0];
@@ -61,5 +78,7 @@ export const handlePacket = (world: World, message: Uint8Array) => {
       return init(n.Init.fromBinary(packet));
     case 2:
       return updateChunks(world, n.UpdateChunks.fromBinary(packet));
+    case 3:
+      return updateEntities(world, n.UpdateEntities.fromBinary(packet));
   }
 };

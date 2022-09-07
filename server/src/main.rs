@@ -1,5 +1,5 @@
 #![feature(slice_flatten)]
-use glam::IVec2;
+use glam::{DVec2, IVec2, UVec2};
 use std::net::TcpListener;
 use std::thread::spawn;
 use tungstenite::{accept, Message as WsMessage};
@@ -16,7 +16,7 @@ fn main() {
     for stream in server.incoming() {
         spawn(move || {
             let mut websocket = accept(stream.unwrap()).unwrap();
-            let world = World::new(
+            let mut world = World::new(
                 vec![Chunk::new(
                     IVec2::new(0, 0),
                     vec![
@@ -29,14 +29,23 @@ fn main() {
                 None,
             );
 
-            websocket.write_message(WsMessage::Binary(packets::init())).unwrap();
+            websocket
+                .write_message(WsMessage::Binary(packets::init()))
+                .unwrap();
 
             websocket
                 .write_message(WsMessage::Binary(packets::update_chunks(
                     &world,
-                    world.chunks.keys().map(Clone::clone).collect(),
+                    world.chunks.keys().collect(),
                 )))
                 .unwrap();
+
+            let id = world.spawn_entity(DVec2::new(32.0, 32.0), UVec2::new(4, 4));
+
+            websocket.write_message(WsMessage::Binary(packets::update_entities(
+                &world,
+                vec![id],
+            ))).unwrap();
 
             websocket.close(None).unwrap();
         });

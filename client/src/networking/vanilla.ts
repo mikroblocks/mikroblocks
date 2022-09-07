@@ -63,6 +63,33 @@ export interface Chunk {
     background?: Uint8Array;
 }
 /**
+ * @generated from protobuf message mikroblocks.vanilla.Entity
+ */
+export interface Entity {
+    /**
+     * @generated from protobuf field: uint32 id = 1;
+     */
+    id: number;
+    /**
+     * @generated from protobuf field: double x = 2;
+     */
+    x: number;
+    /**
+     * @generated from protobuf field: double y = 3;
+     */
+    y: number;
+    /**
+     * In pixels
+     *
+     * @generated from protobuf field: uint32 width = 4;
+     */
+    width: number;
+    /**
+     * @generated from protobuf field: uint32 height = 5;
+     */
+    height: number;
+}
+/**
  * id: 2
  *
  * @generated from protobuf message mikroblocks.vanilla.UpdateChunks
@@ -75,6 +102,17 @@ export interface UpdateChunks {
 }
 /**
  * id: 3
+ *
+ * @generated from protobuf message mikroblocks.vanilla.UpdateEntities
+ */
+export interface UpdateEntities {
+    /**
+     * @generated from protobuf field: repeated mikroblocks.vanilla.Entity entities = 1;
+     */
+    entities: Entity[];
+}
+/**
+ * id: 4
  *
  * @generated from protobuf message mikroblocks.vanilla.KeyboardInput
  */
@@ -214,6 +252,81 @@ class Chunk$Type extends MessageType<Chunk> {
  */
 export const Chunk = new Chunk$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class Entity$Type extends MessageType<Entity> {
+    constructor() {
+        super("mikroblocks.vanilla.Entity", [
+            { no: 1, name: "id", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
+            { no: 2, name: "x", kind: "scalar", T: 1 /*ScalarType.DOUBLE*/ },
+            { no: 3, name: "y", kind: "scalar", T: 1 /*ScalarType.DOUBLE*/ },
+            { no: 4, name: "width", kind: "scalar", T: 13 /*ScalarType.UINT32*/ },
+            { no: 5, name: "height", kind: "scalar", T: 13 /*ScalarType.UINT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Entity>): Entity {
+        const message = { id: 0, x: 0, y: 0, width: 0, height: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Entity>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Entity): Entity {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* uint32 id */ 1:
+                    message.id = reader.uint32();
+                    break;
+                case /* double x */ 2:
+                    message.x = reader.double();
+                    break;
+                case /* double y */ 3:
+                    message.y = reader.double();
+                    break;
+                case /* uint32 width */ 4:
+                    message.width = reader.uint32();
+                    break;
+                case /* uint32 height */ 5:
+                    message.height = reader.uint32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Entity, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* uint32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).uint32(message.id);
+        /* double x = 2; */
+        if (message.x !== 0)
+            writer.tag(2, WireType.Bit64).double(message.x);
+        /* double y = 3; */
+        if (message.y !== 0)
+            writer.tag(3, WireType.Bit64).double(message.y);
+        /* uint32 width = 4; */
+        if (message.width !== 0)
+            writer.tag(4, WireType.Varint).uint32(message.width);
+        /* uint32 height = 5; */
+        if (message.height !== 0)
+            writer.tag(5, WireType.Varint).uint32(message.height);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message mikroblocks.vanilla.Entity
+ */
+export const Entity = new Entity$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class UpdateChunks$Type extends MessageType<UpdateChunks> {
     constructor() {
         super("mikroblocks.vanilla.UpdateChunks", [
@@ -260,6 +373,53 @@ class UpdateChunks$Type extends MessageType<UpdateChunks> {
  * @generated MessageType for protobuf message mikroblocks.vanilla.UpdateChunks
  */
 export const UpdateChunks = new UpdateChunks$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateEntities$Type extends MessageType<UpdateEntities> {
+    constructor() {
+        super("mikroblocks.vanilla.UpdateEntities", [
+            { no: 1, name: "entities", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Entity }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateEntities>): UpdateEntities {
+        const message = { entities: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<UpdateEntities>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateEntities): UpdateEntities {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated mikroblocks.vanilla.Entity entities */ 1:
+                    message.entities.push(Entity.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateEntities, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated mikroblocks.vanilla.Entity entities = 1; */
+        for (let i = 0; i < message.entities.length; i++)
+            Entity.internalBinaryWrite(message.entities[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message mikroblocks.vanilla.UpdateEntities
+ */
+export const UpdateEntities = new UpdateEntities$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class KeyboardInput$Type extends MessageType<KeyboardInput> {
     constructor() {

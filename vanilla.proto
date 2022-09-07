@@ -22,12 +22,28 @@ message Chunk {
     optional bytes background = 5;
 }
 
+
+message Entity {
+    uint32 id = 1;
+    double x = 2;
+    double y = 3;
+
+    // In pixels
+    uint32 width = 4;
+    uint32 height = 5;
+}
+
 // id: 2
 message UpdateChunks {
     repeated Chunk chunks = 1;
 }
 
 // id: 3
+message UpdateEntities {
+    repeated Entity entities = 1;
+}
+
+// id: 4
 message KeyboardInput {
     uint32 char = 1;
 }

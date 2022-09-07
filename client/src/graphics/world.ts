@@ -1,23 +1,24 @@
 import * as twgl from "twgl.js";
-import * as w from "../world";
+import Rgb from "../color";
+import { Chunk, Entity, Pixel, World } from "../world";
 import * as prim from "./primitives";
+
+type Arrays = {
+  [key: string]: twgl.FullArraySpec;
+};
 
 export const setPixel = (
   gl: WebGLRenderingContext,
-  arrays: {
-    [key: string]: twgl.FullArraySpec;
-  },
-  pixel: w.Pixel
+  arrays: Arrays,
+  pixel: Pixel
 ) => {
   prim.setRect(gl, arrays, pixel.pos.mul(8), 8, 8, pixel.color);
 };
 
 export const setChunk = (
   gl: WebGLRenderingContext,
-  arrays: {
-    [key: string]: twgl.FullArraySpec;
-  },
-  chunk: w.Chunk
+  arrays: Arrays,
+  chunk: Chunk
 ) => {
   if (chunk.background)
     prim.setRect(
@@ -38,14 +39,31 @@ export const setChunk = (
   }
 };
 
+export const setEntity = (
+  gl: WebGLRenderingContext,
+  arrays: Arrays,
+  entity: Entity
+) => {
+  prim.setRect(
+    gl,
+    arrays,
+    entity.pos.mul(8).sub(entity.size.mul(4)),
+    entity.size.x * 8,
+    entity.size.y * 8,
+    new Rgb(255, 0, 0)
+  );
+};
+
 export const setWorld = (
   gl: WebGLRenderingContext,
-  arrays: {
-    [key: string]: twgl.FullArraySpec;
-  },
-  world: w.World
+  arrays: Arrays,
+  world: World
 ) => {
-  for (const [pos, chunk] of world.chunks) {
+  for (const chunk of world.chunks.values()) {
     setChunk(gl, arrays, chunk);
+  }
+
+  for (const entity of world.entities.values()) {
+    setEntity(gl, arrays, entity);
   }
 };

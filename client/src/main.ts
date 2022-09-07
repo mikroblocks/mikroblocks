@@ -9,7 +9,7 @@ const world: World = {
 };
 
 const socket = new WebSocket(
-  "wss://3000-mikroblocks-mikroblocks-eaosxfezuyj.ws-us63.gitpod.io/"
+  "wss://3000-mikroblocks-mikroblocks-eaosxfezuyj.ws-us64.gitpod.io/"
 );
 
 socket.binaryType = "arraybuffer";
